@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>English → Spanish Flashcards 🇪🇸</title>
+
+    <!-- Playful/cartoon fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&family=Permanent+Marker&family=Luckiest+Guy&display=swap" rel="stylesheet">
+
+    <style>
+        :root{
+            --card-w: 420px;
+            --card-h: 260px;
+            /* Updated to bolder, more vibrant colors */
+            --accent-1: #ff005d; /* bold pink */
+            --accent-2: #ffd700;
+            --accent-3: #00d084;
+            --accent-4: #8A2BE2; /* bold purple */
+            --panel-bg: #ffffff;
+            --outline: #000000;
+            --accent-coral: #ff7f50; /* Coral color */
+        }
+
+        html,body{height:100%;}
+        body {
+            font-family: 'Baloo 2', 'Arial', sans-serif;
+            margin:0;
+            /* Updated to a bold gradient background */
+            background: linear-gradient(135deg, #ff7f50, #ffe5b4); /* Coral to Peach gradient for the page background */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 36px;
+            gap: 18px;
+            min-height: 100vh;
+        }
+
+        h1 {
+            width: 100%;
+            max-width: 1280px;
+            text-align: center;
+            color: var(--accent-4);
+            margin: 0 0 6px 0;
+            font-family: 'Permanent Marker', 'Baloo 2', cursive;
+            font-size: 56px;
+            letter-spacing: 0.5px;
+            -webkit-text-stroke: 1px var(--outline);
+        }
+
+        /* subtitle */
+        .subtitle{
+            width: 100%;
+            max-width: 1280px;
+            text-align: center;
+            color: var(--accent-4);
+            margin: 0 0 6px 0;
+            font-family: 'Permanent Marker', 'Baloo 2', cursive;
+            font-size: 30px;
+            letter-spacing: 0.5px;
+            -webkit-text-stroke: 1px var(--outline);
+        }
+
+        /* card grid */
+        #cards-grid {
+            display: grid;
+            grid-template-columns: repeat(5, var(--card-w));
+            grid-auto-rows: minmax(var(--card-h), auto);
+            gap: 36px;
+            justify-content: center;
+            align-items: start;
+            padding: 8px 12px 40px 12px;
+            width: 100%;
+            max-width: 1800px;
+        }
+
+        .card-container{
+            perspective: 1200px;
+            width: var(--card-w);
+            height: var(--card-h);
+            transition: transform 250ms ease, box-shadow 250ms ease;
+            transform-origin: center center;
+        }
+
+        /* give natural tilts to rows for a hand-placed look */
+        .card-container:nth-child(5n+1){ transform: rotate(-2deg); }
+        .card-container:nth-child(5n+2){ transform: rotate(1.6deg); }
+        .card-container:nth-child(5n+3){ transform: rotate(-1.2deg); }
+        .card-container:nth-child(5n+4){ transform: rotate(1.4deg); }
+        .card-container:nth-child(5n+5){ transform: rotate(-0.6deg); }
+
+        /* lift on hover (applies to container so flip isn't overridden) */
+        .card-container:hover{ transform: translateY(-10px) rotate(0deg) scale(1.02); z-index: 8; }
+
+        .card{
+            width:100%;
+            height:100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 600ms cubic-bezier(.2,.9,.3,1);
+            cursor: pointer;
+            border-radius: 18px;
+        }
+
+        .card.flip{ transform: rotateY(180deg); }
+
+        .card-face{
+            position: absolute;
+            inset:0;
+            border-radius: 70px;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            box-sizing:border-box;
+            padding: 18px;
+            color: var(--outline);
+            overflow: visible;
+            /* thick hand-drawn outer outline */
+            border: 6px solid var(--outline);
+            /* cut-paper shadow that reads like a bold drop */
+            box-shadow: 0 5px 0 var(--outline), 0 18px 30px rgba(0,0,0,0.1);
+            background: var(--panel-bg);
+        }
+
+        .front {
+            /* Bold gradient background for the front */
+            background: linear-gradient(135deg, #ff005d, #6c00ff);
+            color: var(--outline);
+            font-size: 1.8rem;
+            transform: translateZ(0);
+        }
+
+        .back {
+            /* Bold gradient background for the back */
+            background: linear-gradient(135deg, var(--accent-3), var(--accent-4));
+            transform: rotateY(180deg);
+            color: var(--outline);
+        }
+
+        /* word and emoji styles */
+        .emoji{ font-size: 6.2rem; margin-bottom: 14px; filter: drop-shadow(0 10px 18px rgba(180,130,220,0.16)); }
+        /* use an image instead of emoji; style it to match the emoji size */
+        .emoji-img{ width: 120px; height: 120px; object-fit: contain; margin: 0 auto 12px auto; display: block; }
+
+        /* comic-like text: give a thin black stroke for that outlined look */
+        .word{ font-family: 'Permanent Marker', 'Baloo 2', cursive; font-weight:800; font-size: 50px; color: var(--accent-coral); -webkit-text-stroke: 2px var(--outline); }
+        .spanish{ font-family: 'Permanent Marker', 'Baloo 2', cursive; font-weight:800; font-size: 40px; color: var(--accent-1); -webkit-text-stroke: 2px var(--outline); }
+        .example{ font-size: 1.3rem; margin-top: 10px; opacity: 0.98; color: #222; }
+
+        /* small skewed shadow at base */
+        .card-container::before{
+            content: '';
+            position: absolute;
+            width: calc(var(--card-w) - 40px);
+            height: 18px;
+            background: radial-gradient(closest-side, rgba(0,0,0,0.12), transparent);
+            left: 20px;
+            bottom: -12px;
+            filter: blur(6px);
+            transform: rotate(-2deg);
+            z-index: 0;
+        }
+
+        /* responsive tweaks */
+        @media (max-width: 1700px){
+            :root{ --card-w: 360px; --card-h: 220px; }
+        }
+        @media (max-width: 1400px){
+            #cards-grid{ grid-template-columns: repeat(4, minmax(220px, 1fr)); gap: 26px; }
+            :root{ --card-w: 320px; --card-h: 200px; }
+        }
+        @media (max-width: 1000px){
+            #cards-grid{ grid-template-columns: repeat(2, minmax(160px, 1fr)); gap: 18px; }
+            :root{ --card-w: 280px; --card-h: 180px; }
+            h1{ font-size: 36px; }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<h1>English → Spanish Flashcards 🇪🇸</h1>
+<div class="subtitle">Tap a card to flip — fun, colorful, and hand-styled vibes</div>
+
+<div id="cards-grid"></div>
+
+<script>
+    const words = [
+        // mapped to PNGs that exist in the project root
+        { english: "Hello", spanish: "Hola", image: "hey.png", example: "¡Hola! ¿Cómo estás?" },
+        { english: "Goodbye", spanish: "Adiós", image: "goodbye.png", example: "¡Adiós! Nos vemos mañana." },
+        { english: "Please", spanish: "Por favor", image: "please.png", example: "¿Me puedes ayudar, por favor?" },
+        { english: "Thank you", spanish: "Gracias", image: "ty.png", example: "Gracias por tu ayuda." },
+        { english: "Excuse me", spanish: "Perdón / Disculpe", image: "excuseme.png", example: "Perdón, ¿sabe dónde está la estación?" },
+        { english: "Bathroom", spanish: "Baño", image: "toilet.png", example: "¿Dónde está el baño?" },
+        { english: "Water", spanish: "Agua", image: "water.png", example: "Quisiera un poco de agua, por favor." },
+        { english: "Food", spanish: "Comida", image: "food.png", example: "La comida aquí es deliciosa." },
+        { english: "Where", spanish: "Dónde", image: "lupa.png", example: "¿Dónde está la estación de tren más cercana?" },
+        { english: "How much", spanish: "Cuánto", image: "money.png", example: "¿Cuánto cuesta esto?" },
+        { english: "Friend", spanish: "Amigo / Amiga", image: "shake.png", example: "Mi amigo vive cerca." },
+        { english: "Love", spanish: "Amor", image: "love.png", example: "El amor es importante en la vida." },
+        { english: "Help", spanish: "Ayuda", image: "sos.png", example: "Necesito ayuda con mi maleta." },
+        { english: "Airport", spanish: "Aeropuerto", image: "airplane.png", example: "El aeropuerto está a 20 minutos en coche." },
+        { english: "Train", spanish: "Tren", image: "train.png", example: "El tren llega a las 10:30." }
+    ];
+
+    const grid = document.getElementById('cards-grid');
+
+    words.forEach((word) => {
+        const container = document.createElement('div');
+        container.classList.add('card-container');
+
+        const card = document.createElement('div');
+        card.classList.add('card');
+
+        const front = document.createElement('div');
+        front.classList.add('card-face', 'front');
+        // use per-card image if provided, otherwise fall back to card.png
+        const imgSrc = word.image ? word.image : 'card.png';
+        front.innerHTML = `<div class="content"><img class="emoji-img" src="${imgSrc}" alt="" aria-hidden="true"><div class="word">${word.english}</div></div>`;
+
+        const back = document.createElement('div');
+        back.classList.add('card-face', 'back');
+        back.innerHTML = `<div class="content"><div class="spanish">${word.spanish}</div><div class="example">${word.example}</div></div>`;
+        // back template removed — no image prepended
+
+        card.appendChild(front);
+        card.appendChild(back);
+        container.appendChild(card);
+        grid.appendChild(container);
+
+        // flip
+        card.addEventListener('click', () => {
+            card.classList.toggle('flip');
+        });
+    });
+</script>
+
+</body>
+</html>
