@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>English → Spanish Flashcards 🇪🇸</title>
 
-    <!-- Playful/cartoon fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&family=Permanent+Marker&family=Luckiest+Guy&display=swap" rel="stylesheet">
 
     <style>
         :root{
-            --card-w: 420px;
-            --card-h: 260px;
+            --card-w: 1fr;
+            --card-h: 240px;
             /* Updated to bolder, more vibrant colors */
             --accent-1: #ff005d; /* bold pink */
             --accent-2: #ffd700;
@@ -20,19 +19,23 @@
             --panel-bg: #ffffff;
             --outline: #000000;
             --accent-coral: #ff7f50; /* Coral color */
+            --card-radius: clamp(8px, 1.5vw, 24px);
+            --card-font: clamp(0.55rem, 1.4vw, 2rem);
+            --spanish-font: clamp(0.5rem, 1.3vw, 1.8rem);
+            --word-font: clamp(0.6rem, 1.5vw, 2.2rem);
+            --img-size: clamp(20px, 5vw, 90px);
         }
 
         html,body{height:100%;}
         body {
             font-family: 'Baloo 2', 'Arial', sans-serif;
             margin:0;
-            /* Updated to a bold gradient background */
-            background: linear-gradient(135deg, #ff7f50, #ffe5b4); /* Coral to Peach gradient for the page background */
+            background: linear-gradient(135deg, #ff7f50, #ffe5b4);
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 36px;
-            gap: 18px;
+            padding: clamp(8px, 2vw, 24px);
+            gap: 10px;
             min-height: 100vh;
         }
 
@@ -41,56 +44,52 @@
             max-width: 1280px;
             text-align: center;
             color: var(--accent-4);
-            margin: 0 0 6px 0;
+            margin: 0 0 4px 0;
             font-family: 'Permanent Marker', 'Baloo 2', cursive;
-            font-size: 56px;
+            font-size: clamp(20px, 3.5vw, 48px);
             letter-spacing: 0.5px;
             -webkit-text-stroke: 1px var(--outline);
         }
 
-        /* subtitle */
         .subtitle{
             width: 100%;
             max-width: 1280px;
             text-align: center;
             color: var(--accent-4);
-            margin: 0 0 6px 0;
+            margin: 0 0 4px 0;
             font-family: 'Permanent Marker', 'Baloo 2', cursive;
-            font-size: 30px;
+            font-size: clamp(13px, 2vw, 24px);
             letter-spacing: 0.5px;
             -webkit-text-stroke: 1px var(--outline);
         }
 
-        /* card grid */
         #cards-grid {
             display: grid;
-            grid-template-columns: repeat(5, var(--card-w));
-            grid-auto-rows: minmax(var(--card-h), auto);
-            gap: 36px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: clamp(8px, 1.2vw, 24px);
             justify-content: center;
             align-items: start;
-            padding: 8px 12px 40px 12px;
+            padding: 4px 0 20px 0;
             width: 100%;
-            max-width: 1800px;
+            max-width: 1600px;
         }
 
         .card-container{
             perspective: 1200px;
-            width: var(--card-w);
-            height: var(--card-h);
+            width: 100%;
+            aspect-ratio: 4 / 3;
             transition: transform 250ms ease, box-shadow 250ms ease;
             transform-origin: center center;
+            position: relative;
         }
 
-        /* give natural tilts to rows for a hand-placed look */
         .card-container:nth-child(5n+1){ transform: rotate(-2deg); }
         .card-container:nth-child(5n+2){ transform: rotate(1.6deg); }
         .card-container:nth-child(5n+3){ transform: rotate(-1.2deg); }
         .card-container:nth-child(5n+4){ transform: rotate(1.4deg); }
         .card-container:nth-child(5n+5){ transform: rotate(-0.6deg); }
 
-        /* lift on hover (applies to container so flip isn't overridden) */
-        .card-container:hover{ transform: translateY(-10px) rotate(0deg) scale(1.02); z-index: 8; }
+        .card-container:hover{ transform: translateY(-8px) rotate(0deg) scale(1.04); z-index: 8; }
 
         .card{
             width:100%;
@@ -99,7 +98,7 @@
             transform-style: preserve-3d;
             transition: transform 600ms cubic-bezier(.2,.9,.3,1);
             cursor: pointer;
-            border-radius: 18px;
+            border-radius: var(--card-radius);
         }
 
         .card.flip{ transform: rotateY(180deg); }
@@ -107,7 +106,7 @@
         .card-face{
             position: absolute;
             inset:0;
-            border-radius: 70px;
+            border-radius: var(--card-radius);
             display:flex;
             flex-direction:column;
             align-items:center;
@@ -115,67 +114,127 @@
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
             box-sizing:border-box;
-            padding: 18px;
+            padding: clamp(6px, 1vw, 14px);
             color: var(--outline);
-            overflow: visible;
-            /* thick hand-drawn outer outline */
-            border: 6px solid var(--outline);
-            /* cut-paper shadow that reads like a bold drop */
-            box-shadow: 0 5px 0 var(--outline), 0 18px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: clamp(2px, 0.3vw, 5px) solid var(--outline);
+            box-shadow: 0 4px 0 var(--outline), 0 12px 24px rgba(0,0,0,0.1);
             background: var(--panel-bg);
         }
 
         .front {
-            /* Bold gradient background for the front */
             background: linear-gradient(135deg, #ff005d, #6c00ff);
             color: var(--outline);
-            font-size: 1.8rem;
+            font-size: var(--card-font);
             transform: translateZ(0);
         }
 
         .back {
-            /* Bold gradient background for the back */
             background: linear-gradient(135deg, var(--accent-3), var(--accent-4));
             transform: rotateY(180deg);
             color: var(--outline);
         }
 
-        /* word and emoji styles */
-        .emoji{ font-size: 6.2rem; margin-bottom: 14px; filter: drop-shadow(0 10px 18px rgba(180,130,220,0.16)); }
-        /* use an image instead of emoji; style it to match the emoji size */
-        .emoji-img{ width: 120px; height: 120px; object-fit: contain; margin: 0 auto 12px auto; display: block; }
+        .emoji{ font-size: clamp(2rem, 4vw, 5rem); margin-bottom: 8px; filter: drop-shadow(0 10px 18px rgba(180,130,220,0.16)); }
+        .emoji-img{
+            width: var(--img-size);
+            height: var(--img-size);
+            object-fit: contain;
+            margin: 0 auto clamp(2px, 0.5vw, 8px) auto;
+            display: block;
+        }
 
-        /* comic-like text: give a thin black stroke for that outlined look */
-        .word{ font-family: 'Permanent Marker', 'Baloo 2', cursive; font-weight:800; font-size: 50px; color: var(--accent-coral); -webkit-text-stroke: 2px var(--outline); }
-        .spanish{ font-family: 'Permanent Marker', 'Baloo 2', cursive; font-weight:800; font-size: 40px; color: var(--accent-1); -webkit-text-stroke: 2px var(--outline); }
-        .example{ font-size: 1.3rem; margin-top: 10px; opacity: 0.98; color: #222; }
+        .word{
+            font-family: 'Permanent Marker', 'Baloo 2', cursive;
+            font-weight:800;
+            font-size: var(--word-font);
+            color: var(--accent-coral);
+            -webkit-text-stroke: clamp(0.5px, 0.1vw, 1.5px) var(--outline);
+            text-align: center;
+            line-height: 1.1;
+        }
+        .spanish{
+            font-family: 'Permanent Marker', 'Baloo 2', cursive;
+            font-weight:800;
+            font-size: var(--spanish-font);
+            color: var(--accent-1);
+            -webkit-text-stroke: clamp(0.5px, 0.1vw, 1.5px) var(--outline);
+            text-align: center;
+            line-height: 1.1;
+        }
+        .example{
+            font-size: clamp(0.55rem, 0.9vw, 1rem);
+            margin-top: clamp(2px, 0.5vw, 8px);
+            opacity: 0.98;
+            color: #222;
+            text-align: center;
+            line-height: 1.3;
+        }
 
-        /* small skewed shadow at base */
         .card-container::before{
             content: '';
             position: absolute;
-            width: calc(var(--card-w) - 40px);
-            height: 18px;
+            width: 80%;
+            height: 14px;
             background: radial-gradient(closest-side, rgba(0,0,0,0.12), transparent);
-            left: 20px;
-            bottom: -12px;
-            filter: blur(6px);
+            left: 10%;
+            bottom: -10px;
+            filter: blur(5px);
             transform: rotate(-2deg);
             z-index: 0;
         }
 
-        /* responsive tweaks */
-        @media (max-width: 1700px){
-            :root{ --card-w: 360px; --card-h: 220px; }
-        }
+        /* ---- Responsive breakpoints ---- */
+
+        /* Medium desktops / small laptops */
         @media (max-width: 1400px){
-            #cards-grid{ grid-template-columns: repeat(4, minmax(220px, 1fr)); gap: 26px; }
-            :root{ --card-w: 320px; --card-h: 200px; }
+            #cards-grid{ grid-template-columns: repeat(5, 1fr); gap: clamp(6px, 1vw, 16px); }
         }
-        @media (max-width: 1000px){
-            #cards-grid{ grid-template-columns: repeat(2, minmax(160px, 1fr)); gap: 18px; }
-            :root{ --card-w: 280px; --card-h: 180px; }
-            h1{ font-size: 36px; }
+
+        @media (max-width: 1100px){
+            #cards-grid{ grid-template-columns: repeat(4, 1fr); }
+        }
+
+        /* Tablets landscape */
+        @media (max-width: 900px){
+            #cards-grid{ grid-template-columns: repeat(3, 1fr); }
+            :root{
+                --img-size: clamp(40px, 8vw, 80px);
+                --word-font: clamp(0.9rem, 2vw, 1.6rem);
+                --spanish-font: clamp(0.85rem, 1.8vw, 1.4rem);
+            }
+        }
+
+        /* Tablets portrait */
+        @media (max-width: 680px){
+            #cards-grid{ grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .card-container:nth-child(n){ transform: rotate(0deg); }
+            .card-container:hover{ transform: translateY(-4px) scale(1.02); }
+            :root{
+                --img-size: clamp(32px, 10vw, 70px);
+                --word-font: clamp(0.85rem, 3vw, 1.4rem);
+                --spanish-font: clamp(0.8rem, 2.8vw, 1.3rem);
+            }
+        }
+
+        /* Phones */
+        @media (max-width: 420px){
+            #cards-grid{ grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            :root{
+                --card-radius: 14px;
+                --img-size: clamp(28px, 12vw, 56px);
+                --word-font: clamp(0.75rem, 3.5vw, 1.2rem);
+                --spanish-font: clamp(0.7rem, 3vw, 1.1rem);
+            }
+            body{ padding: 8px; }
+            .card-container{ aspect-ratio: 4 / 3; }
+            .example{ font-size: clamp(0.5rem, 2.5vw, 0.8rem); }
+        }
+
+        /* Very small phones */
+        @media (max-width: 320px){
+            #cards-grid{ grid-template-columns: 1fr; }
+            .card-container{ aspect-ratio: 3 / 2; }
         }
 
     </style>
@@ -184,13 +243,12 @@
 <body>
 
 <h1>English → Spanish Flashcards 🇪🇸</h1>
-<div class="subtitle">Tap a card to flip — fun, colorful, and hand-styled vibes</div>
+<div class="subtitle">Tap a card to flip</div>
 
 <div id="cards-grid"></div>
 
 <script>
     const words = [
-        // mapped to PNGs that exist in the project root
         { english: "Hello", spanish: "Hola", image: "hey.png", example: "¡Hola! ¿Cómo estás?" },
         { english: "Goodbye", spanish: "Adiós", image: "goodbye.png", example: "¡Adiós! Nos vemos mañana." },
         { english: "Please", spanish: "Por favor", image: "please.png", example: "¿Me puedes ayudar, por favor?" },
